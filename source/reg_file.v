@@ -30,17 +30,17 @@ module reg_file(//根据指令集，寄存器要支持最多同时读出两个�
 
     input rd_en1,
     input [`RegAddrBus] rdaddr1,
-    input [`RegBus] rddata1,
+    output reg [`RegBus] rddata1,
 
     input rd_en2,
     input [`RegAddrBus] rdaddr2,
-    input [`RegBus] rddata2
+    output reg [`RegBus] rddata2
 
     );
 
     reg [`RegBus] regs [0:`RegNum - 1];//大端
 
-    always@(posedge clk)begin 
+    always@(posedge clk)begin //回写阶段的实现，因此会是时序电路
         if(rst == `RstDisable)begin 
             if((wr_en == `WriteEnable) && (wraddr !== `RegNumLog2'h0))//MIPS架构规定reg0只能为0，不能写入
                 regs[wraddr] <= wrdata;
