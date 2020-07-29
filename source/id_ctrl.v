@@ -28,6 +28,14 @@ module id_ctrl(//纯组合逻辑电路
     input [`RegBus] reg1_data,
     input [`RegBus] reg2_data,
 
+    input ex_wr_en,//防止流水线数据读写冲突
+    input [`RegBus] ex_wdata,
+    input [`RegAddrBus] ex_waddr,
+
+    input mem_wr_en,
+    input [`RegBus] mem_wdata,
+    input [`RegAddrBus] mem_waddr,
+
     output reg reg1_rd_en,
     output reg reg2_rd_en,
     output reg [`RegAddrBus] reg1_addr,
@@ -91,6 +99,10 @@ module id_ctrl(//纯组合逻辑电路
     always@(*)begin 
         if(rst == `RstEnable)
             reg1_out <= `ZeroWord;
+        else if((reg1_rd_en == `ReadEnable) && (ex_wr_en == `WriteEnable) && (ex_waddr == reg1_addr))
+            reg1_out <= ex_wdata;
+        else if((reg1_rd_en == `ReadEnable) && (mem_wr_en == `WriteEnable) && (mem_waddr == reg1_addr))
+            reg1_out <= mem_wdata;   
         else if(reg1_rd_en == `ReadEnable)
             reg1_out <= reg1_data;
         else if(reg1_rd_en == `ReadDisable)
@@ -102,6 +114,10 @@ module id_ctrl(//纯组合逻辑电路
     always@(*)begin 
         if(rst == `RstEnable)
             reg2_out <= `ZeroWord;
+        else if((reg2_rd_en == `ReadEnable) && (ex_wr_en == `WriteEnable) && (ex_waddr == reg2_addr))
+            reg2_out <= ex_wdata;
+        else if((reg2_rd_en == `ReadEnable) && (mem_wr_en == `WriteEnable) && (mem_waddr == reg2_addr))
+            reg2_out <= mem_wdata;
         else if(reg2_rd_en == `ReadEnable)
             reg2_out <= reg2_data;
         else if(reg2_rd_en == `ReadDisable)

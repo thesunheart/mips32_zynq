@@ -117,6 +117,14 @@ module mips32_zynq(
     .reg1_data (reg1_data),
     .reg2_data (reg2_data),
 
+    .ex_wr_en (wr_en1),//防止流水线数据读写冲突
+    .ex_wdata (wdata_out),
+    .ex_waddr (waddr_out),
+
+    .mem_wr_en (wr_en2),
+    .mem_wdata (wdata),
+    .mem_waddr (waddr1),
+
     .reg1_rd_en (reg1_rd_en),
     .reg2_rd_en (reg2_rd_en),
     .reg1_addr (reg1_addr),
