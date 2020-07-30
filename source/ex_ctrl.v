@@ -44,6 +44,12 @@ module ex_ctrl(
             case(ex_aluop)
                 `EXE_OR_OP:
                     logicout <= ex_reg1 | ex_reg2;
+                `EXE_XOR_OP:
+                    logicout <= ex_reg1 ^ ex_reg2;
+                `EXE_NOR_OP:
+                    logicout <= ~(ex_reg1 | ex_reg2);
+                `EXE_AND_OP:
+                    logicout <= ex_reg1 & ex_reg2;
                 default:
                     logicout <= `ZeroWord;
             endcase

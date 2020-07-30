@@ -24,8 +24,8 @@
 
 `define InstAddrBus 31:0
 `define InstBus 31:0
-`define InstMemNum 131071
-`define InstMemNumLog2 17
+`define InstMemNum 16384//不能太大，FPGA资源不够
+`define InstMemNumLog2 14
 
 `define RegAddrBus 4:0
 `define RegBus 31:0
@@ -59,8 +59,22 @@
 `define EXE_NOP 6'b000000
 
 `define EXE_OR_OP 8'b00100101
+`define EXE_NOR_OP 8'b00100110
+`define EXE_XOR_OP 8'b00100111
+`define EXE_AND_OP 8'b00101111
 `define EXE_NOP_OP 8'b00000000
 
 `define EXE_RES_LOGIC 3'b001
 `define EXE_RES_NOP 3'b000 
+
+`define EXE_AND 6'b100100
+`define EXE_OR 6'b100101 
+`define EXE_XOR 6'b100110 
+`define EXE_NOR 6'b100111 
+`define EXE_ANDI 6'b001100   
+`define EXE_XORI 6'b001110 
+
+`define EXE_SPECIAL_INST 6'b000000 
+
+
 

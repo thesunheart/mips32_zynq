@@ -53,8 +53,10 @@ module id_ctrl(//纯组合逻辑电路
     reg [`RegBus] imm;
     reg instvalid;
 
-    wire [5:0] op;
-    assign op = id_inst[31:26];
+    wire [5:0] op = id_inst[31:26];
+    wire [4:0] op2 = id_inst[10:6];
+    wire [5:0] op3 = id_inst[5:0];
+    wire [4:0] op4 = id_inst[20:16];
 
     always@(*)begin 
         if(rst == `RstEnable)begin 
@@ -90,6 +92,68 @@ module id_ctrl(//纯组合逻辑电路
                     imm <= {16'h0, id_inst[15:0]};
                     waddr <= id_inst[20:16];
                     instvalid <= `InstInvalid;
+                end
+                `EXE_ANDI:begin 
+                    wr_en <= `WriteEnable;
+                    aluop <= `EXE_AND_OP;
+                    alusel <= `EXE_RES_LOGIC;
+                    reg1_rd_en <= `ReadEnable;
+                    reg2_rd_en <= `ReadDisable;
+                    imm <= {16'h0, id_inst[15:0]};
+                    waddr <= id_inst[20:16];
+                    instvalid <= `InstInvalid;
+                end
+                `EXE_XORI:begin 
+                    wr_en <= `WriteEnable;
+                    aluop <= `EXE_XOR_OP;
+                    alusel <= `EXE_RES_LOGIC;
+                    reg1_rd_en <= `ReadEnable;
+                    reg2_rd_en <= `ReadDisable;
+                    imm <= {16'h0, id_inst[15:0]};
+                    waddr <= id_inst[20:16];
+                    instvalid <= `InstInvalid;
+                end
+                `EXE_SPECIAL_INST:begin 
+                    case(op2)
+                        5'b00000:begin 
+                            case(op3)
+                                `EXE_OR:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_OR_OP;
+                                    alusel <= `EXE_RES_LOGIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_AND:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_AND_OP;
+                                    alusel <= `EXE_RES_LOGIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_XOR:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_XOR_OP;
+                                    alusel <= `EXE_RES_LOGIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_NOR:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_NOR_OP;
+                                    alusel <= `EXE_RES_LOGIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                default:;
+                            endcase
+                        end
+                        default:;
+                    endcase
                 end
                 default:;
             endcase
