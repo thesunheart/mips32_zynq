@@ -26,10 +26,18 @@ module ex_mem(
     input [`RegBus] wdata,
     input [`RegAddrBus] waddr,
     input wr_en,
+
+    input [`RegBus] ex_hi,
+    input [`RegBus] ex_lo,
+    input ex_hilo_en,
     
     output reg [`RegBus] mem_wdata,
     output reg [`RegAddrBus] mem_waddr,
-    output reg mem_wr_en
+    output reg mem_wr_en,
+
+    output reg [`RegBus] mem_hi,
+    output reg [`RegBus] mem_lo,
+    output reg mem_hilo_en
 
     );
 
@@ -38,11 +46,17 @@ module ex_mem(
             mem_wdata <= `ZeroWord;
             mem_waddr <= `NOPRegAddr;
             mem_wr_en <= `WriteDisable;
+            mem_hi <= `ZeroWord;
+            mem_lo <= `ZeroWord;
+            mem_hilo_en <= `WriteDisable;
         end
         else begin 
             mem_wdata <= wdata;
             mem_waddr <= waddr;
             mem_wr_en <= wr_en;
+            mem_hi <= ex_hi;
+            mem_lo <= ex_lo;
+            mem_hilo_en <= ex_hilo_en;
         end
     end
             

@@ -70,6 +70,25 @@ module mips32_zynq(
     wire [`RegAddrBus] wb_waddr;
     wire wb_wr_en;
 
+    wire [`RegBus] wb_hi;
+    wire [`RegBus] wb_lo;
+    wire wb_hilo_en;
+
+    wire [`RegBus] mem_hi;
+    wire [`RegBus] mem_lo;
+    wire mem_hilo_en;
+
+    wire [`RegBus] hi_out;
+    wire [`RegBus] lo_out;
+
+    wire [`RegBus] ex_hi;
+    wire [`RegBus] ex_lo;
+    wire ex_hilo_en;
+
+    wire [`RegBus] hi;
+    wire [`RegBus] lo;
+    wire hilo_en;
+
 
     pc_ctrl pc_ctrl(
     .clk (clk),
@@ -169,7 +188,22 @@ module mips32_zynq(
 
     .wdata_out (wdata_out),
     .waddr_out (waddr_out),
-    .wr_en (wr_en1)
+    .wr_en (wr_en1),
+
+    .hi (hi_out),
+    .lo (lo_out),
+
+    .wb_hi (wb_hi),
+    .wb_lo (wb_lo),
+    .wb_hilo_en (wb_hilo_en),
+
+    .mem_hi (mem_hi),
+    .mem_lo (mem_lo),
+    .mem_hilo_en (mem_hilo_en),
+
+    .hi_out (ex_hi),
+    .lo_out (ex_lo),
+    .hilo_en_out (ex_hilo_en)
 
     );
 
@@ -179,10 +213,18 @@ module mips32_zynq(
     .wdata (wdata_out),
     .waddr (waddr_out),
     .wr_en (wr_en1),
+
+    .ex_hi (ex_hi),
+    .ex_lo (ex_lo),
+    .ex_hilo_en (ex_hilo_en),
     
     .mem_wdata (mem_wdata),
     .mem_waddr (mem_waddr),
-    .mem_wr_en (mem_wr_en)
+    .mem_wr_en (mem_wr_en),
+
+    .mem_hi (hi),
+    .mem_lo (lo),
+    .mem_hilo_en (hilo_en)
 
     );
 
@@ -191,10 +233,18 @@ module mips32_zynq(
     .mem_wdata (mem_wdata),
     .mem_waddr (mem_waddr),
     .mem_wr_en (mem_wr_en),
+
+    .hi (hi),
+    .lo (lo),
+    .hilo_en (hilo_en),
     
     .wdata (wdata),
     .waddr (waddr1),
-    .wr_en (wr_en2)
+    .wr_en (wr_en2),
+
+    .hi_out (mem_hi),
+    .lo_out (mem_lo),
+    .hilo_en_out (mem_hilo_en)
 
     );
 
@@ -204,10 +254,29 @@ module mips32_zynq(
     .wdata (wdata),
     .waddr (waddr1),
     .wr_en (wr_en2),
+
+    .mem_hi (mem_hi),
+    .mem_lo (mem_lo),
+    .mem_hilo_en (mem_hilo_en),
     
     .wb_wdata (wb_wdata),
     .wb_waddr (wb_waddr),
-    .wb_wr_en (wb_wr_en)
+    .wb_wr_en (wb_wr_en),
+
+    .wb_hi (wb_hi),
+    .wb_lo (wb_lo),
+    .wb_hilo_en (wb_hilo_en)
+
+    );
+
+    hilo_reg hilo_ctrl(//乘除法特殊寄存器
+    .clk (clk),
+    .rst (rst),
+    .wr_en (wb_hilo_en),
+    .hi (wb_hi),
+    .lo (wb_lo),
+    .hi_out (hi_out),
+    .lo_out (lo_out)
 
     );
 

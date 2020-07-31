@@ -66,6 +66,7 @@
 
 `define EXE_RES_LOGIC 3'b001
 `define EXE_RES_NOP 3'b000 
+`define EXE_RES_MOVE 3'b010  
 
 `define EXE_AND 6'b100100
 `define EXE_OR 6'b100101 
@@ -75,6 +76,20 @@
 `define EXE_XORI 6'b001110 
 
 `define EXE_SPECIAL_INST 6'b000000 
+
+`define EXE_MOVZ 6'b001010 
+`define EXE_MOVN 6'b001011 
+`define EXE_MFHI 6'b010000 
+`define EXE_MTHI 6'b010001 
+`define EXE_MFLO 6'b010010 
+`define EXE_MTLO 6'b010011 
+
+`define EXE_MOVZ_OP 8'b00101000 
+`define EXE_MOVN_OP 8'b00101100 
+`define EXE_MFHI_OP 8'b01000000 
+`define EXE_MTHI_OP 8'b01000100 
+`define EXE_MFLO_OP 8'b01001000 
+`define EXE_MTLO_OP 8'b01001100 
 
 
 

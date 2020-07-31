@@ -149,6 +149,58 @@ module id_ctrl(//纯组合逻辑电路
                                     reg2_rd_en <= `ReadEnable;
                                     instvalid <= `InstInvalid;
                                 end
+                                `EXE_MFHI:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_MFHI_OP;
+                                    alusel <= `EXE_RES_MOVE;
+                                    reg1_rd_en <= `ReadDisable;
+                                    reg2_rd_en <= `ReadDisable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_MFLO:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_MFLO_OP;
+                                    alusel <= `EXE_RES_MOVE;
+                                    reg1_rd_en <= `ReadDisable;
+                                    reg2_rd_en <= `ReadDisable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_MTLO:begin 
+                                    wr_en <= `WriteDisable;//不需要修改通用寄存器
+                                    aluop <= `EXE_MTLO_OP;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadDisable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_MTHI:begin 
+                                    wr_en <= `WriteDisable;
+                                    aluop <= `EXE_MTHI_OP;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadDisable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_MOVN:begin 
+                                    if(reg2_data != `ZeroWord)
+                                        wr_en <= `WriteEnable;
+                                    else 
+                                        wr_en <= `WriteDisable;
+                                    aluop <= `EXE_MOVN_OP;
+                                    alusel <= `EXE_RES_MOVE;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_MOVZ:begin 
+                                    if(reg2_data == `ZeroWord)
+                                        wr_en <= `WriteEnable;
+                                    else 
+                                        wr_en <= `WriteDisable;
+                                    aluop <= `EXE_MOVZ_OP;
+                                    alusel <= `EXE_RES_MOVE;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
                                 default:;
                             endcase
                         end
