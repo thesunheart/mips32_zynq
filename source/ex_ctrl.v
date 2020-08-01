@@ -54,6 +54,54 @@ module ex_ctrl(
     reg [`RegBus] hi_reg;
     reg [`RegBus] lo_reg;
     reg [`RegBus] mov_reg;
+    reg [`RegBus] arith_reg;
+    reg [`DoubleRegBus] mult_reg;
+
+    wire [`RegBus] reg2;
+    wire [`RegBus] sum_result;
+    wire over_sum;//溢出
+    wire reg_compare;//比较reg1是否小于reg2
+    wire [`RegBus] mult_op1;//乘法
+    wire [`RegBus] mult_op2;
+    wire [`DoubleRegBus] hilo_temp;
+    
+
+    assign reg2 = ((ex_aluop == `EXE_SUB_OP) || (ex_aluop == `EXE_SUBU_OP) || (ex_aluop == `EXE_SLT_OP)) ? (~ex_reg2) + 1 : ex_reg2;//求补码
+    assign sum_result = ex_reg1 + reg2;
+    assign over_sum = (~ex_reg1[31] & ~rge2[31] & sum_result[31]) || (ex_reg1[31] & rge2[31] & ~sum_result[31]);
+    assign reg_compare = (ex_aluop == `EXE_SLT_OP) ? ((ex_reg1[31] & ~ex_reg2[31]) || (~ex_reg1[31] & ~ex_reg2[31] & sum_result[31]) || (ex_reg1[31] & ex_reg2[31] & sum_result[31])) : (ex_reg1 < ex_reg2);//无符号数自由比较
+
+    assign mult_op1 = ((ex_aluop == `EXE_MUL_OP) || (ex_aluop == `EXE_MULT_OP) && ex_reg1[31]) ? (~ex_reg1 + 1) : ex_reg1;
+    assign mult_op2 = ((ex_aluop == `EXE_MUL_OP) || (ex_aluop == `EXE_MULT_OP) && ex_reg2[31]) ? (~ex_reg2 + 1) : ex_reg2;
+    assign hilo_temp = mult_op1 * mult_op2;
+
+    always@(*)begin 
+        if(rst == `RstEnable)
+            mult_reg <= {`ZeroWord, `ZeroWord};
+        else if((ex_aluop == `EXE_MULT_OP) || (ex_aluop == `EXE_MUL_OP))begin 
+            if(ex_reg1[31] ^ ex_reg2[31])
+                mult_reg <= ~hilo_temp + 1;
+            else 
+                mult_reg <= hilo_temp;
+        end
+        else 
+            mult_reg <= hilo_temp;
+    end
+
+    always@(*)begin 
+        if(rst == `RstEnable)
+            arith_reg <= `ZeroWord;
+        else begin 
+            case(ex_aluop)
+                `EXE_SLT_OP, `EXE_SLTU_OP:
+                    arith_reg <= reg_compare;
+                `EXE_AND_OP, EXE_ADDU_OP, `EXE_ADDI_OP, `EXE_ADDIU_OP, `EXE_SUB_OP, `EXE_SUBU_OP:
+                    arith_reg <= sum_result;
+                default:
+                    arith_reg <= `ZeroWord;
+            endcase
+        end
+    end
 
     always@(*)begin 
         if(rst == `RstEnable)
@@ -101,6 +149,11 @@ module ex_ctrl(
             hi_out <= hi_reg;
             lo_out <= ex_reg1;
         end
+        else if((ex_aluop == `EXE_MULT_OP) || (ex_aluop == `EXE_MULTU_OP))begin  
+            hilo_en_out <= `WriteEnable;
+            hi_out <= mult_reg[63:32];
+            lo_out <= mult_reg[31:0];
+        end
         else begin 
             hilo_en_out <= `WriteDisable;
             hi_out <= `ZeroWord;
@@ -129,13 +182,20 @@ module ex_ctrl(
     end
 
     always@(*)begin 
-        wr_en <= ex_wr_en;
+        if((ex_aluop == `EXE_AND_OP) || (ex_aluop == `EXE_ADDI_OP) || (ex_aluop == `EXE_SUB_OP) && over_sum)
+            wr_en <= `WriteDisable;
+        else 
+            wr_en <= ex_wr_en;
         waddr_out <= ex_waddr;
         case(ex_aluselop)
             `EXE_RES_LOGIC:
                 wdata_out <= logicout;
             `EXE_RES_MOVE:
                 wdata_out <= mov_reg;
+            `EXE_RES_ARITHMETIC:
+                wdata_out <= arith_reg;
+            `EXE_RES_MUL:
+                wdata_out <= mult_reg[31:0];
             default:
                 wdata_out <= `ZeroWord;
         endcase     

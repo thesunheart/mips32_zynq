@@ -201,6 +201,121 @@ module id_ctrl(//纯组合逻辑电路
                                     reg2_rd_en <= `ReadEnable;
                                     instvalid <= `InstInvalid;
                                 end
+                                `EXE_SLT:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_SLT_OP;
+                                    alusel <= `EXE_RES_ARITHMETIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_SLTU:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_SLTU_OP;
+                                    alusel <= `EXE_RES_ARITHMETIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_ADD:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_ADD_OP;
+                                    alusel <= `EXE_RES_ARITHMETIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_ADDU:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_ADDU_OP;
+                                    alusel <= `EXE_RES_ARITHMETIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_SUB:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_SUB_OP;
+                                    alusel <= `EXE_RES_ARITHMETIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_SUBU:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_SUBU_OP;
+                                    alusel <= `EXE_RES_ARITHMETIC;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_MULT:begin 
+                                    wr_en <= `WriteDisable;
+                                    aluop <= `EXE_MULT_OP;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                `EXE_MULTU:begin 
+                                    wr_en <= `WriteDisable;
+                                    aluop <= `EXE_MULTU_OP;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
+                                default:;
+                            endcase
+                        end
+                        `EXE_SLTI:begin 
+                            wr_en <= `WriteEnable;
+                            aluop <= `EXE_SLT_OP;
+                            alusel <= `EXE_RES_ARITHMETIC;
+                            reg1_rd_en <= `ReadEnable;
+                            reg2_rd_en <= `ReadDisable;
+                            imm <= {{16{id_inst[15]}}, id_inst[15:0]};
+                            waddr <= id_inst[20:16];
+                            instvalid <= `InstInvalid;
+                        end
+                        `EXE_SLTIU:begin 
+                            wr_en <= `WriteEnable;
+                            aluop <= `EXE_SLTU_OP;
+                            alusel <= `EXE_RES_ARITHMETIC;
+                            reg1_rd_en <= `ReadEnable;
+                            reg2_rd_en <= `ReadDisable;
+                            imm <= {{16{id_inst[15]}}, id_inst[15:0]};
+                            waddr <= id_inst[20:16];
+                            instvalid <= `InstInvalid;
+                        end
+                        `EXE_ADDI:begin 
+                            wr_en <= `WriteEnable;
+                            aluop <= `EXE_ADDI_OP;
+                            alusel <= `EXE_RES_ARITHMETIC;
+                            reg1_rd_en <= `ReadEnable;
+                            reg2_rd_en <= `ReadDisable;
+                            imm <= {{16{id_inst[15]}}, id_inst[15:0]};
+                            waddr <= id_inst[20:16];
+                            instvalid <= `InstInvalid;
+                        end
+                        `EXE_ADDIU:begin 
+                            wr_en <= `WriteEnable;
+                            aluop <= `EXE_ADDIU_OP;
+                            alusel <= `EXE_RES_ARITHMETIC;
+                            reg1_rd_en <= `ReadEnable;
+                            reg2_rd_en <= `ReadDisable;
+                            imm <= {{16{id_inst[15]}}, id_inst[15:0]};
+                            waddr <= id_inst[20:16];
+                            instvalid <= `InstInvalid;
+                        end
+                        `EXE_SPECIAL2_INST:begin 
+                            case(op3)
+                                `EXE_MUL:begin 
+                                    wr_en <= `WriteEnable;
+                                    aluop <= `EXE_MUL_OP;
+                                    alusel <= `EXE_RES_MUL;
+                                    reg1_rd_en <= `ReadEnable;
+                                    reg2_rd_en <= `ReadEnable;
+                                    instvalid <= `InstInvalid;
+                                end
                                 default:;
                             endcase
                         end
