@@ -1,5 +1,5 @@
-# mips32_zynq/r
-mips32 based on zynq
+# mips32_zynq
+mips32 based on zynq/n
 2020年新工科联盟-Xilinx暑期学校（Summer School）项目
 使用软件：Vivado 2018.3
 板卡：ZYNQ7020
