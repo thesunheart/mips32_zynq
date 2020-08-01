@@ -98,8 +98,8 @@
 `define EXE_SLTU 6'b101011 
 `define EXE_SLTI 6'b001010 
 `define EXE_SLTIU 6'b001011 
-`define EXE_ADD 6'b100000 
-`define EXE_ADDU 6'b100001 
+`define EXE_ADD 6'b100000 //有符号型
+`define EXE_ADDU 6'b100001 //无符号型
 `define EXE_SUB 6'b100010 
 `define EXE_SUBU 6'b100011 
 `define EXE_ADDI 6'b001000 

@@ -60,7 +60,7 @@ module reg_file(//根据指令集，寄存器要支持最多同时读出两个�
             rddata1 <= `ZeroWord;
     end
 
-    always@(*)begin //组合逻辑电路，保证读出数据到译码阶段结束为一个时钟周期
+    always@(*)begin 
         if(rst ==`RstEnable)
             rddata2 <= `ZeroWord;
         else if(rdaddr2 == `RegNumLog2'h0)

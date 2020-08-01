@@ -182,7 +182,7 @@ module ex_ctrl(
     end
 
     always@(*)begin 
-        if(((ex_aluop == `EXE_ADD_OP) || (ex_aluop == `EXE_ADDI_OP) || (ex_aluop == `EXE_SUB_OP)) && (over_sum == 1'b1))
+        if(((ex_aluop == `EXE_ADD_OP) || (ex_aluop == `EXE_ADDI_OP) || (ex_aluop == `EXE_SUB_OP)) && (over_sum))
             wr_en <= `WriteDisable;
         else 
             wr_en <= ex_wr_en;
