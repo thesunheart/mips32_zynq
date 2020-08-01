@@ -68,7 +68,7 @@ module ex_ctrl(
 
     assign reg2 = ((ex_aluop == `EXE_SUB_OP) || (ex_aluop == `EXE_SUBU_OP) || (ex_aluop == `EXE_SLT_OP)) ? (~ex_reg2) + 1 : ex_reg2;//求补码
     assign sum_result = ex_reg1 + reg2;
-    assign over_sum = (~ex_reg1[31] & ~rge2[31] & sum_result[31]) || (ex_reg1[31] & rge2[31] & ~sum_result[31]);
+    assign over_sum = (~ex_reg1[31] & ~reg2[31] & sum_result[31]) || (ex_reg1[31] & reg2[31] & ~sum_result[31]);
     assign reg_compare = (ex_aluop == `EXE_SLT_OP) ? ((ex_reg1[31] & ~ex_reg2[31]) || (~ex_reg1[31] & ~ex_reg2[31] & sum_result[31]) || (ex_reg1[31] & ex_reg2[31] & sum_result[31])) : (ex_reg1 < ex_reg2);//无符号数自由比较
 
     assign mult_op1 = ((ex_aluop == `EXE_MUL_OP) || (ex_aluop == `EXE_MULT_OP) && ex_reg1[31]) ? (~ex_reg1 + 1) : ex_reg1;
@@ -95,7 +95,7 @@ module ex_ctrl(
             case(ex_aluop)
                 `EXE_SLT_OP, `EXE_SLTU_OP:
                     arith_reg <= reg_compare;
-                `EXE_AND_OP, EXE_ADDU_OP, `EXE_ADDI_OP, `EXE_ADDIU_OP, `EXE_SUB_OP, `EXE_SUBU_OP:
+                `EXE_ADD_OP, `EXE_ADDU_OP, `EXE_ADDI_OP, `EXE_ADDIU_OP, `EXE_SUB_OP, `EXE_SUBU_OP:
                     arith_reg <= sum_result;
                 default:
                     arith_reg <= `ZeroWord;
@@ -182,7 +182,7 @@ module ex_ctrl(
     end
 
     always@(*)begin 
-        if((ex_aluop == `EXE_AND_OP) || (ex_aluop == `EXE_ADDI_OP) || (ex_aluop == `EXE_SUB_OP) && over_sum)
+        if(((ex_aluop == `EXE_ADD_OP) || (ex_aluop == `EXE_ADDI_OP) || (ex_aluop == `EXE_SUB_OP)) && (over_sum == 1'b1))
             wr_en <= `WriteDisable;
         else 
             wr_en <= ex_wr_en;

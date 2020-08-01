@@ -42,13 +42,13 @@ module reg_file(//根据指令集，寄存器要支持最多同时读出两个�
 
     always@(posedge clk)begin //回写阶段的实现，因此会是时序电路
         if(rst == `RstDisable)begin 
-            if((wr_en == `WriteEnable) && (wraddr !== `RegNumLog2'h0))//MIPS架构规定reg0只能为0，不能写入
+            if((wr_en == `WriteEnable) && (wraddr != `RegNumLog2'h0))//MIPS架构规定reg0只能为0，不能写入
                 regs[wraddr] <= wrdata;
         end
     end
 
     always@(*)begin //组合逻辑电路，保证读出数据到译码阶段结束为一个时钟周期
-        if(`RstEnable)
+        if(rst == `RstEnable)
             rddata1 <= `ZeroWord;
         else if(rdaddr1 == `RegNumLog2'h0)
             rddata1 <= `ZeroWord;
@@ -61,11 +61,11 @@ module reg_file(//根据指令集，寄存器要支持最多同时读出两个�
     end
 
     always@(*)begin //组合逻辑电路，保证读出数据到译码阶段结束为一个时钟周期
-        if(`RstEnable)
+        if(rst ==`RstEnable)
             rddata2 <= `ZeroWord;
         else if(rdaddr2 == `RegNumLog2'h0)
             rddata2 <= `ZeroWord;
-        else if((wr_en == `WriteEnable) && (rd_en2 == `ReadEnable) && (wraddr == rdaddr1))
+        else if((wr_en == `WriteEnable) && (rd_en2 == `ReadEnable) && (wraddr == rdaddr2))
             rddata2 <= wrdata;
         else if(rd_en2 == `ReadEnable)
             rddata2 <= regs[rdaddr2];
